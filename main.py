@@ -107,7 +107,6 @@ if __name__ == "__main__":
 
    # Start an infinite loop that prompts the user for input and generates AI responses
     while alive:
-        print(alive)
         # Prompt the user for input and store it in the variable 'prompt'
         prompt = input(f"\n{userRole}: ")
 
