@@ -17,6 +17,7 @@ history = []
 model = "gpt-3.5-turbo"
 aiRole = "assistant"
 userRole = "user"
+alive = True
 
 # Define a Message class that stores the role and content of a chat message
 
@@ -45,10 +46,23 @@ def resetHistory():
     history = [{"role": "system", "content": "You are a helpful assistant."}]
 
 
+# Define a function called exit() that ends the program
+def exit():
+    print("Exiting Program...")
+    global alive
+    alive = False
+
+
 # Define a function called checkCommands() that checks if the user's input is a command and executes the command if it is
 def checkCommands(prompt):
     if (prompt == "/reset"):
         resetHistory()
+        return True
+    elif (prompt == "/exit"):
+        exit()
+        return True
+    elif (prompt == ""):
+        # this case covers empty prompts
         return True
     else:
         return False
@@ -93,7 +107,8 @@ if __name__ == "__main__":
     print("Welcome to ChatGPT in the terminal!\n")
 
    # Start an infinite loop that prompts the user for input and generates AI responses
-    while True:
+    while alive:
+        print(alive)
         # Prompt the user for input and store it in the variable 'prompt'
         prompt = input(f"\n{userRole}: ")
 
@@ -120,3 +135,5 @@ if __name__ == "__main__":
 
         # Print the AI's response to the console
         print(f'\n{aiRole}: {reponse}')
+
+    print("\nGood Bye.")
