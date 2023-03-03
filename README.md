@@ -1,3 +1,11 @@
+Building this out into a bigger project...
+
+conda create --name <your_env_name> python=3.8
+conda activate <your_env_name>
+pip install -r requirements.txt
+
+
+Example return object from openAI chatbot
 {
     "choices": [
       {
