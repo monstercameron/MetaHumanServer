@@ -19,9 +19,8 @@ aiRole = "assistant"
 userRole = "user"
 alive = True
 
+
 # Define a Message class that stores the role and content of a chat message
-
-
 class Message:
     def __init__(self, role, content):
         self.role = role
