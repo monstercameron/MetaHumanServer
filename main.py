@@ -41,7 +41,11 @@ def promptAI():
 
 # Define a function called resetHistory() that resets the chat history to the initial message
 def resetHistory():
-    print("Resetting Chat History...\n")
+    global history
+    if (len(history) > 0):
+        print("Resetting Chat History...\n")
+    else:
+        print("Setting The AI personality...\n")
     history = [{"role": "system", "content": "You are a helpful assistant."}]
 
 
