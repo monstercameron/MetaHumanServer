@@ -19,6 +19,8 @@ aiRole = "assistant"
 userRole = "user"
 
 # Define a Message class that stores the role and content of a chat message
+
+
 class Message:
     def __init__(self, role, content):
         self.role = role
@@ -28,6 +30,7 @@ class Message:
     def to_dict(self):
         return {"role": self.role, "content": self.content}
 
+
 # Define a function called promptAI() that sends a request to the OpenAI API to generate a chat response
 def promptAI():
     return openai.ChatCompletion.create(
@@ -35,10 +38,12 @@ def promptAI():
         messages=history
     )
 
+
 # Define a function called resetHistory() that resets the chat history to the initial message
 def resetHistory():
     print("Resetting Chat History...\n")
     history = [{"role": "system", "content": "You are a helpful assistant."}]
+
 
 # Define a function called checkCommands() that checks if the user's input is a command and executes the command if it is
 def checkCommands(prompt):
@@ -47,6 +52,7 @@ def checkCommands(prompt):
         return True
     else:
         return False
+
 
 # Define a function called promptOpenAI() that sends a request to the OpenAI API to generate a chat response and handles rate limit errors
 def promptOpenAI():
@@ -69,13 +75,16 @@ def promptOpenAI():
             # Other error, re-raise the exception
             raise e
 
+
 # Define a function called getPromptText() that extracts the generated response text from the OpenAI response object
 def getPromptText(response):
     return response["choices"].pop(0)["message"]["content"]
 
+
 # Define a function called addToChatHistory() that adds a message to the chat history
 def addToChatHistory(previous):
     history.append(previous)
+
 
 # Check if the script is being run as the main program
 if __name__ == "__main__":
@@ -91,7 +100,7 @@ if __name__ == "__main__":
         # Check if the user's input is a command using the 'checkCommands' function
         isCommand = checkCommands(prompt)
 
-        if(isCommand):
+        if (isCommand):
             # If the user's input is a command, skip the rest of the loop and start a new iteration
             continue
 
@@ -111,4 +120,3 @@ if __name__ == "__main__":
 
         # Print the AI's response to the console
         print(f'\n{aiRole}: {reponse}')
-
