@@ -1,7 +1,13 @@
 import os
+import threading
 import importlib.machinery
+import time
 from dotenv import load_dotenv
 from helpers.audio import play_audio_file
+from server.index import app
+
+chatInProgress = False
+
 
 # Step 1: Listen for wake word
 from importlib.machinery import SourceFileLoader
@@ -60,6 +66,12 @@ print("Setting up AI personality")
 # main function
 def main(context):
     # getting the context of the wake word
+    # prevent running simultaneously
+    global chatInProgress
+    if chatInProgress == True:
+        return
+    chatInProgress = True
+
     # needs custom models for other non-standard wake words
     if context == "porcupine":
         print("Resetting ChatGPT History")
@@ -73,18 +85,26 @@ def main(context):
         # step 2 record audio and end when stop speaking
         file_path = f"{OUTPUT}/recording.wav"
         listen_and_save_audio(file_path)
+        # audio = listen_and_save_audio()
 
         # step 3 speech to text
         prompt = transcribe(file_path)
+        # prompt = transcribe(wav_data=audio)
+        global app
+        app.message_history = chatGPT.history
 
         # step 4 prompt chatGPT
         print(f'{chatGPT.user_role}:{prompt}')
         response = chatGPT.next(prompt)
         print(f'{chatGPT.ai_role}: {response}')
+        app.message_history = chatGPT.history
 
         # step 5 generate speech to text
         filePath = generate_audio(response)
         play_audio_file(filePath)
+
+        # allow new prompts
+        chatInProgress = False
 
     # play audio buzz to show that the computer is ready to start listening
     play_audio_file("resources/notif2.wav")
@@ -95,7 +115,17 @@ def main(context):
     # generate_image(prompt, OUTPUT, filename)
 
 
-if __name__ == "__main__":
-    # step 1 listen for wake word
+def listForWakeWord():
+    # Perform other tasks in the main thread
     print("Computer is listening, try 'Computer' to make a prompt or 'porcupine' to start a new conversation")
     detect_hotword(main)
+
+
+if __name__ == "__main__":
+    # Start Flask app in a new thread
+    # wakeWord = threading.Thread(target=listForWakeWord)
+    # wakeWord.start()
+
+    main('')
+
+    # app.run(debug=True)
