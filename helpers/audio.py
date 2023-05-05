@@ -1,5 +1,8 @@
 import pyaudio
 import wave
+from playsound import playsound
+import sounddevice as sd
+import soundfile as sf
 
 
 def play_audio_file(filename):
@@ -25,3 +28,22 @@ def play_audio_file(filename):
         stream.stop_stream()
         stream.close()
         audio.terminate()
+
+
+def play_audio_fileV2(filename):
+    playsound(filename)
+
+
+def play_audio_fileV3(filename):
+    # read the WAV file
+    data, fs = sf.read(filename)
+
+    # play the WAV file
+    sd.play(data, fs)
+
+    # wait for the audio to finish playing
+    sd.wait()
+
+
+if __name__ == "__main__":
+    play_audio_fileV3('D:/repos/metahumanserver/samples/output.wav')

@@ -1,16 +1,16 @@
+from importlib.machinery import SourceFileLoader
 import os
 import threading
 import importlib.machinery
 import time
 from dotenv import load_dotenv
-from helpers.audio import play_audio_file
+from helpers.audio import play_audio_file, play_audio_fileV3
 from server.index import app
 
 chatInProgress = False
 
 
 # Step 1: Listen for wake word
-from importlib.machinery import SourceFileLoader
 
 wake_word_module = '1-pipeline-wakeword.index'
 wake_word_path = './1-pipeline-wakeword'
@@ -43,6 +43,13 @@ tts_path = './5-pipeline-tts'
 tts_loader = SourceFileLoader(tts_module, tts_path + '/index.py')
 tts = tts_loader.load_module()
 generate_audio = tts.generate_audio
+
+# step 5a prompt to speech
+tts_module = '5a-pipeline-tts.bark.index'
+tts_path = './5a-pipeline-tts/bark'
+tts_loader = SourceFileLoader(tts_module, tts_path + '/index.py')
+tts = tts_loader.load_module()
+generate_audioV2 = tts.generate_audio
 
 # Step 7: Generate image
 stable_diffusion_module = '7-stablediffusion.index'
@@ -100,8 +107,10 @@ def main(context):
         app.message_history = chatGPT.history
 
         # step 5 generate speech to text
-        filePath = generate_audio(response)
-        play_audio_file(filePath)
+        # filePath = generate_audio(response)
+        filePath = generate_audioV2(response, cuda_device=2)
+        # play_audio_file(filePath)
+        play_audio_fileV3(filePath)
 
         # allow new prompts
         chatInProgress = False
@@ -125,7 +134,7 @@ if __name__ == "__main__":
     # Start Flask app in a new thread
     # wakeWord = threading.Thread(target=listForWakeWord)
     # wakeWord.start()
-
-    main('')
+    # main('')
+    listForWakeWord()
 
     # app.run(debug=True)
