@@ -1,3 +1,10 @@
+from step_7_image_generation.index import generate_image
+from step_5_tts_slow.index import generate_audio as generate_audio_v2
+from step_5_tts_fast.index import generate_audio, load_model as load_model_tts
+from step_4_chatbot.index import ChatGPT
+from step_3_stt.index import transcribe, load_model as load_model_stt
+from step_2_audio_recording.index import listen_and_save_audio
+from step_1_wakeword.index import detect_hotword
 from importlib.machinery import SourceFileLoader
 import os
 import threading
@@ -7,42 +14,28 @@ from dotenv import load_dotenv
 from helpers.audio import play_audio_file, play_audio_fileV3
 # from server.index import app
 
-chatInProgress = False
-
-# importing steps
-
-# Step 1: Listen for wake word
-from step_1_wakeword.index import detect_hotword
-
-# Step 2: Listen and save audio
-from step_2_audio_recording.index import listen_and_save_audio
-
-# Step 3: Transcribe audio to text
-from step_3_stt.index import transcribe
-
-# Step 4: Prompt ChatGPT
-from step_4_chatbot.index import ChatGPT
-
-# step 5 prompt to speech fast
-from step_5_tts_fast.index import generate_audio
-
-# step 5a prompt to speech
-from step_5_tts_slow.index import generate_audio
-
-# Step 7: Generate image
-from step_7_image_generation.index import generate_image
-
 # Load the environment variables from the .env file
 load_dotenv()
+
 OUTPUT = os.getenv("OUTPUT")
 model = os.getenv("MODEL")
 aiRole = os.getenv("AIROLE")
 userRole = os.getenv("USERROLE")
 
 # Create ChatGPT instance
-chatGPT = chatgpt.ChatGPT(model, aiRole, userRole)
-print('Initializing chatGPT')
-print("Setting up AI personality")
+chatGPT = ChatGPT(model, aiRole, userRole)
+
+# Models
+models = {}
+
+chatInProgress = False
+
+
+def load_models():
+    device = os.getenv("STTDEVICE")
+    models['stt'] = load_model_stt(device)
+    device = os.getenv("TTSDEVICE")
+    models['tts'] = load_model_tts(device)
 
 
 # main function
@@ -50,9 +43,10 @@ def main(context):
     # getting the context of the wake word
     # prevent running simultaneously
     global chatInProgress
-    if chatInProgress == True:
+    if chatInProgress:
         return
-    chatInProgress = True
+    else:
+        chatInProgress = True
 
     # needs custom models for other non-standard wake words
     if context == "porcupine":
@@ -70,20 +64,22 @@ def main(context):
         # audio = listen_and_save_audio()
 
         # step 3 speech to text
-        prompt = transcribe(file_path)
+        prompt = transcribe(file_path=file_path, model=models['stt'])
         # prompt = transcribe(wav_data=audio)
-        global app
-        app.message_history = chatGPT.history
+        # global app
+        # app.message_history = chatGPT.history
+        message_history = chatGPT.history
 
         # step 4 prompt chatGPT
         print(f'{chatGPT.user_role}:{prompt}')
         response = chatGPT.next(prompt)
         print(f'{chatGPT.ai_role}: {response}')
-        app.message_history = chatGPT.history
+        # app.message_history = chatGPT.history
 
         # step 5 generate speech to text
-        # filePath = generate_audio(response)
-        filePath = generate_audioV2(response, cuda_device=2)
+        filePath = generate_audio(
+            prompt=response, output_path=OUTPUT, model=models["tts"])
+        # filePath = generate_audio_v2(response, cuda_device=2)
         # play_audio_file(filePath)
         play_audio_fileV3(filePath)
 
@@ -110,6 +106,7 @@ if __name__ == "__main__":
     # wakeWord = threading.Thread(target=listenForWakeWord)
     # wakeWord.start()
     # main('')
+    load_models()
     listenForWakeWord()
 
     # app.run(debug=True)

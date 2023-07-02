@@ -15,6 +15,8 @@ class ChatGPT:
         self.history = []
         self.alive = True
         self.reset_history()
+        print('Initializing chatGPT')
+        print("Setting up AI personality")
 
     class Message:
         def __init__(self, role, content):
