@@ -5,66 +5,41 @@ import importlib.machinery
 import time
 from dotenv import load_dotenv
 from helpers.audio import play_audio_file, play_audio_fileV3
-from server.index import app
+# from server.index import app
 
 chatInProgress = False
 
+# importing steps
 
 # Step 1: Listen for wake word
-
-wake_word_module = '1-pipeline-wakeword.index'
-wake_word_path = './1-pipeline-wakeword'
-wake_word = SourceFileLoader(
-    wake_word_module, wake_word_path + '/index.py').load_module()
-detect_hotword = wake_word.detect_hotword
+from step_1_wakeword.index import detect_hotword
 
 # Step 2: Listen and save audio
-speech_module = '2-pipeline-speech.index'
-speech_path = './2-pipeline-speech'
-speech = SourceFileLoader(
-    speech_module, speech_path + '/index.py').load_module()
-listen_and_save_audio = speech.listen_and_save_audio
+from step_2_audio_recording.index import listen_and_save_audio
 
 # Step 3: Transcribe audio to text
-stt_module = '3-pipeline-stt.index'
-stt_path = './3-pipeline-stt'
-stt = SourceFileLoader(stt_module, stt_path + '/index.py').load_module()
-transcribe = stt.transcribe
+from step_3_stt.index import transcribe
 
 # Step 4: Prompt ChatGPT
-chatgpt_module = '4-pipeline-chatGPT.index'
-chatgpt_path = './4-pipeline-chatGPT'
-chatgpt = SourceFileLoader(
-    chatgpt_module, chatgpt_path + '/index.py').load_module()
+from step_4_chatbot.index import ChatGPT
 
-# step 5 prompt to speech
-tts_module = '5-pipeline-tts.index'
-tts_path = './5-pipeline-tts'
-tts_loader = SourceFileLoader(tts_module, tts_path + '/index.py')
-tts = tts_loader.load_module()
-generate_audio = tts.generate_audio
+# step 5 prompt to speech fast
+from step_5_tts_fast.index import generate_audio
 
 # step 5a prompt to speech
-tts_module = '5a-pipeline-tts.bark.index'
-tts_path = './5a-pipeline-tts/bark'
-tts_loader = SourceFileLoader(tts_module, tts_path + '/index.py')
-tts = tts_loader.load_module()
-generate_audioV2 = tts.generate_audio
+from step_5_tts_slow.index import generate_audio
 
 # Step 7: Generate image
-stable_diffusion_module = '7-stablediffusion.index'
-stable_diffusion_path = './7-stablediffusion'
-stable_diffusion = SourceFileLoader(
-    stable_diffusion_module, stable_diffusion_path + '/index.py').load_module()
-generate_image = stable_diffusion.generate_image
+from step_7_image_generation.index import generate_image
 
 # Load the environment variables from the .env file
 load_dotenv()
 OUTPUT = os.getenv("OUTPUT")
+model = os.getenv("MODEL")
+aiRole = os.getenv("AIROLE")
+userRole = os.getenv("USERROLE")
 
-model = "gpt-3.5-turbo"
-aiRole = "assistant"
-userRole = "user"
+# Create ChatGPT instance
 chatGPT = chatgpt.ChatGPT(model, aiRole, userRole)
 print('Initializing chatGPT')
 print("Setting up AI personality")
@@ -124,7 +99,7 @@ def main(context):
     # generate_image(prompt, OUTPUT, filename)
 
 
-def listForWakeWord():
+def listenForWakeWord():
     # Perform other tasks in the main thread
     print("Computer is listening, try 'Computer' to make a prompt or 'porcupine' to start a new conversation")
     detect_hotword(main)
@@ -132,9 +107,9 @@ def listForWakeWord():
 
 if __name__ == "__main__":
     # Start Flask app in a new thread
-    # wakeWord = threading.Thread(target=listForWakeWord)
+    # wakeWord = threading.Thread(target=listenForWakeWord)
     # wakeWord.start()
     # main('')
-    listForWakeWord()
+    listenForWakeWord()
 
     # app.run(debug=True)
