@@ -1,49 +1,59 @@
-import pyaudio
 import wave
-from playsound import playsound
 import sounddevice as sd
 import soundfile as sf
+import threading
 
 
-def play_audio_file(filename):
-    # Load the WAV file
-    with wave.open(filename, 'rb') as wave_file:
-        # Initialize the PyAudio library
-        audio = pyaudio.PyAudio()
+class AudioPlayer:
+    def __init__(self):
+        self.stop_flag = False
+        self.playback_thread = None
 
-        # Open a stream to play the audio
-        stream = audio.open(format=audio.get_format_from_width(wave_file.getsampwidth()),
-                            channels=wave_file.getnchannels(),
-                            rate=wave_file.getframerate(),
-                            output=True)
+    def play_audio_file_sync(self, filename):
+        # Read the WAV file
+        data, fs = sf.read(filename)
 
-        # Read the audio data and play it in chunks
-        chunk_size = 1024
-        data = wave_file.readframes(chunk_size)
-        while data:
-            stream.write(data)
-            data = wave_file.readframes(chunk_size)
+        # Play the WAV file synchronously
+        sd.play(data, fs)
+        sd.wait()
 
-        # Stop and close the audio stream and PyAudio library
-        stream.stop_stream()
-        stream.close()
-        audio.terminate()
+    def play_audio_file_async(self, filename):
+        self.stop_flag = False
 
+        # Read the WAV file
+        data, fs = sf.read(filename)
 
-def play_audio_fileV2(filename):
-    playsound(filename)
+        # Play the WAV file in a separate thread
+        def play_thread():
+            sd.play(data, fs)
+            sd.wait()
+            self.stop_flag = True
 
+        # Start the playback thread
+        self.playback_thread = threading.Thread(target=play_thread)
+        self.playback_thread.start()
 
-def play_audio_fileV3(filename):
-    # read the WAV file
-    data, fs = sf.read(filename)
+    def stop_playback(self):
+        self.stop_flag = True
+        if self.playback_thread:
+            self.playback_thread.join()
+            self.playback_thread = None
 
-    # play the WAV file
-    sd.play(data, fs)
-
-    # wait for the audio to finish playing
-    sd.wait()
+    def __del__(self):
+        self.stop_playback()
 
 
 if __name__ == "__main__":
-    play_audio_fileV3('D:/repos/metahumanserver/samples/output.wav')
+    filename = 'D:/repos/metahumanserver/samples/output.wav'
+
+    # Create an instance of AudioPlayer
+    player = AudioPlayer()
+
+    # Synchronous playback
+    player.play_audio_file_sync(filename)
+
+    # Asynchronous playback
+    player.play_audio_file_async(filename)
+
+    # Stop the playback
+    player.stop_playback()

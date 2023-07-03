@@ -20,7 +20,7 @@ def load_model(cuda_device):
 
     # Running a multi-speaker and multi-lingual model
     tts = TTS(model_name='tts_models/en/vctk/vits',
-              progress_bar=True, gpu=True, )
+              progress_bar=False, gpu=True, )
     return tts
 
 
