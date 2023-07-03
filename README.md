@@ -1,6 +1,6 @@
 # 🚀 Meta Human Server - The Ultimate Voice-Interactive Python Chatbot For Integration Games and Online Services 🚀
 
-Welcome to the **PyChatApp**! This sophisticated piece of software, built entirely on Python, combines some of the most incredible advancements in artificial intelligence, natural language processing, and audio processing to create an interactive voice-activated chatbot that listens, understands, and responds to your prompts in a way that feels incredibly human. Let's delve into the fun, feature-filled, and exciting world of PyChatApp!
+Welcome to the **Meta Human Server**! This sophisticated piece of software, built entirely on Python, combines some of the most incredible advancements in artificial intelligence, natural language processing, and audio processing to create an interactive voice-activated chatbot that listens, understands, and responds to your prompts in a way that feels incredibly human. Let's delve into the fun, feature-filled, and exciting world of Meta Human Server!
 
 ## 📖 Table of Contents
 
@@ -16,7 +16,7 @@ Welcome to the **PyChatApp**! This sophisticated piece of software, built entire
 
 Before we delve into the crux of the matter, please ensure you have Python 3.8 (or newer) installed on your system. Don't worry; we'll patiently wait for you to get it done. Python in place? Fantastic! Let's proceed.
 
-The installation of PyChatApp is a breeze. Simply clone this repository and navigate to the project root directory. Then, execute the following command to install the necessary dependencies:
+The installation of Meta Human Server is a breeze. Simply clone this repository and navigate to the project root directory. Then, execute the following command to install the necessary dependencies:
 
 ```bash
 pip install -r requirements.txt
@@ -26,11 +26,11 @@ If you're asking, "That's it?" Yes, you're absolutely correct. That's it!
 
 ## 🏗 Architecture
 
-PyChatApp is built around a modular and flexible architecture, compartmentalizing different tasks into different functions to keep the system clean and maintainable. Here's a brief overview of the critical steps involved:
+Meta Human Server is built around a modular and flexible architecture, compartmentalizing different tasks into different functions to keep the system clean and maintainable. Here's a brief overview of the critical steps involved:
 
 1. **Wake word detection**: Our application is always listening, eagerly waiting for you to call its name. If you say "Computer," the magic starts!
 
-2. **Audio recording**: Once activated, PyChatApp will record your voice prompt and save it as an audio file.
+2. **Audio recording**: Once activated, Meta Human Server will record your voice prompt and save it as an audio file.
 
 3. **Speech-to-Text (STT)**: This recorded audio is then converted into text using a powerful STT model.
 
@@ -40,11 +40,11 @@ PyChatApp is built around a modular and flexible architecture, compartmentalizin
 
 6. **Audio playback**: The audio response is then played back to you. How's that for a conversation!
 
-For each of these steps, we have separate modules handling the job, making PyChatApp highly scalable and customizable. 
+For each of these steps, we have separate modules handling the job, making Meta Human Server highly scalable and customizable. 
 
 ## 🛠 Usage
 
-To fire up PyChatApp, use the following commands:
+To fire up Meta Human Server, use the following commands:
 
 ```bash
 python main.py
@@ -64,15 +64,15 @@ A. As of now, the wake word is hard-coded. However, you can easily modify this b
 
 **Q. What languages does the chatbot support?**
 
-A. Currently, PyChatApp only supports English.
+A. Currently, Meta Human Server only supports English.
 
 ## 🤝 Contributing
 
-Want to make PyChatApp even better? We encourage and welcome contributions. Please refer to the contributing guide for more details.
+Want to make Meta Human Server even better? We encourage and welcome contributions. Please refer to the contributing guide for more details.
 
 ## 📜 Licence
 
-PyChatApp is released under the MIT license. See the LICENSE file for more details.
+Meta Human Server is released under the MIT license. See the LICENSE file for more details.
 
 ## 📞 Contacts
 
@@ -82,7 +82,7 @@ If you have any questions or comments, please
 
 ## 🎉 Congratulations!
 
-You've made it to the end of this verbose README! Now, it's time to enjoy using **PyChatApp** and converse with your new AI friend!
+You've made it to the end of this verbose README! Now, it's time to enjoy using **Meta Human Server** and converse with your new AI friend!
 
 ---
 Happy Coding! 🚀🚀🚀
